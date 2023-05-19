@@ -95,7 +95,8 @@ def get_pokemon(request, name: str):
 
     return HttpResponse(
         content_type="application/json",
-        content=json.dumps({"error": "Method not allowed"})
+        content=json.dumps({"error": "Method not allowed"}),
+        status=400
     )
 
 
@@ -123,7 +124,8 @@ def get_pokemon_for_mobile(request, name: str):
 
     return HttpResponse(
         content_type="application/json",
-        content=json.dumps({"error": "Method not allowed"})
+        content=json.dumps({"error": "Method not allowed"}),
+        status=400
     )
 
 
@@ -138,7 +140,8 @@ def get_all_pokemons(request):
 
     return HttpResponse(
         content_type="application/json",
-        content=json.dumps({"error": "Method not allowed"})
+        content=json.dumps({"error": "Method not allowed"}),
+        status=400
     )
 
 
