@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
 
 def filter_by_keys(source: dict, keys: list[str]) -> dict:
@@ -75,43 +76,58 @@ def _get_pokemon(name) -> Pokemon | None:
     return None
 
 
+@csrf_exempt
 def get_pokemon(request, name: str):
-    pokemon: Pokemon = _get_pokemon(name)
+    if request.method == "GET":
+        pokemon: Pokemon = _get_pokemon(name)
 
-    if pokemon:
+        if pokemon:
+            return HttpResponse(
+                content_type="application/json",
+                content=json.dumps(asdict(pokemon)),
+            )
+
         return HttpResponse(
             content_type="application/json",
-            content=json.dumps(asdict(pokemon)),
+            content=json.dumps({"error": "Pokemon not found"}),
+            status=404
         )
 
     return HttpResponse(
         content_type="application/json",
-        content=json.dumps({"error": "Pokemon not found"}),
-        status=404
+        content=json.dumps({"error": "Method not allowed"})
     )
 
 
+@csrf_exempt
 def get_pokemon_for_mobile(request, name: str):
-    pokemon: Pokemon = _get_pokemon(name)
+    if request.method == "GET":
+        pokemon: Pokemon = _get_pokemon(name)
 
-    if pokemon:
-        result = filter_by_keys(
-            asdict(pokemon),
-            ["id", "name", "base_experience"],
-        )
+        if pokemon:
+            result = filter_by_keys(
+                asdict(pokemon),
+                ["id", "name", "base_experience"],
+            )
+
+            return HttpResponse(
+                content_type="application/json",
+                content=json.dumps(result),
+            )
 
         return HttpResponse(
             content_type="application/json",
-            content=json.dumps(result),
+            content=json.dumps({"error": "Pokemon not found"}),
+            status=404
         )
 
     return HttpResponse(
         content_type="application/json",
-        content=json.dumps({"error": "Pokemon not found"}),
-        status=404
+        content=json.dumps({"error": "Method not allowed"})
     )
 
 
+@csrf_exempt
 def get_all_pokemons(request):
     if request.method == "GET":
         pokemons: list = [asdict(pokemon) for pokemon, _ in POKEMONS.values()]
