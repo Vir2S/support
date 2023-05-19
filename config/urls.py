@@ -112,8 +112,23 @@ def get_pokemon_for_mobile(request, name: str):
     )
 
 
+def get_all_pokemons(request):
+    if request.method == "GET":
+        pokemons: list = [asdict(pokemon) for pokemon, _ in POKEMONS.values()]
+        return HttpResponse(
+            content_type="application/json",
+            content=json.dumps(pokemons),
+        )
+
+    return HttpResponse(
+        content_type="application/json",
+        content=json.dumps({"error": "Method not allowed"})
+    )
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/pokemons/", get_all_pokemons),
     path("api/pokemon/<str:name>/", get_pokemon),
     path("api/pokemon/mobile/<str:name>/", get_pokemon_for_mobile),
 ]
