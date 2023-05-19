@@ -5,9 +5,8 @@ import json
 import requests
 from django.conf import settings
 from django.contrib import admin
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.urls import path
-from requests.exceptions import HTTPError
 
 
 def filter_by_keys(source: dict, keys: list[str]) -> dict:
