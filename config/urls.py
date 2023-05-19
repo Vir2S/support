@@ -77,7 +77,7 @@ def _get_pokemon(name) -> Pokemon | None:
 
 
 @csrf_exempt
-def get_pokemon(request, name: str):
+def get_delete_pokemon(request, name: str):
     if request.method == "GET":
         pokemon: Pokemon = _get_pokemon(name)
 
@@ -90,6 +90,21 @@ def get_pokemon(request, name: str):
         return HttpResponse(
             content_type="application/json",
             content=json.dumps({"error": "Pokemon not found"}),
+            status=404
+        )
+
+    if request.method == "DELETE":
+        if name in POKEMONS:
+            del POKEMONS[name]
+            return HttpResponse(
+                content_type="application/json",
+                content=json.dumps({"message": f"Pokemon '{name}' removed from cache"}),
+                status=204,
+            )
+
+        return HttpResponse(
+            content_type="application/json",
+            content=json.dumps({"error": "Pokemon not found in cache"}),
             status=404
         )
 
@@ -148,6 +163,6 @@ def get_all_pokemons(request):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/pokemons/", get_all_pokemons),
-    path("api/pokemon/<str:name>/", get_pokemon),
+    path("api/pokemon/<str:name>/", get_delete_pokemon),
     path("api/pokemon/mobile/<str:name>/", get_pokemon_for_mobile),
 ]
