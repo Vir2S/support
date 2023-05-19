@@ -86,7 +86,7 @@ def get_pokemon(request, name: str):
         )
 
     return HttpResponse(
-        content_type="applocation/json",
+        content_type="application/json",
         content=json.dumps({"error": "Pokemon not found"}),
         status=404
     )
@@ -107,7 +107,7 @@ def get_pokemon_for_mobile(request, name: str):
         )
 
     return HttpResponse(
-        content_type="applocation/json",
+        content_type="application/json",
         content=json.dumps({"error": "Pokemon not found"}),
         status=404
     )
