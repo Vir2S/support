@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
 import json
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 
 import requests
 from django.conf import settings
