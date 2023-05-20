@@ -90,7 +90,7 @@ def get_delete_pokemon(request, name: str):
         return HttpResponse(
             content_type="application/json",
             content=json.dumps({"error": "Pokemon not found"}),
-            status=404
+            status=404,
         )
 
     if request.method == "DELETE":
@@ -105,13 +105,13 @@ def get_delete_pokemon(request, name: str):
         return HttpResponse(
             content_type="application/json",
             content=json.dumps({"error": "Pokemon not found in cache"}),
-            status=404
+            status=404,
         )
 
     return HttpResponse(
         content_type="application/json",
         content=json.dumps({"error": "Method not allowed"}),
-        status=400
+        status=400,
     )
 
 
@@ -134,13 +134,13 @@ def get_pokemon_for_mobile(request, name: str):
         return HttpResponse(
             content_type="application/json",
             content=json.dumps({"error": "Pokemon not found"}),
-            status=404
+            status=404,
         )
 
     return HttpResponse(
         content_type="application/json",
         content=json.dumps({"error": "Method not allowed"}),
-        status=400
+        status=400,
     )
 
 
@@ -156,7 +156,7 @@ def get_all_pokemons(request):
     return HttpResponse(
         content_type="application/json",
         content=json.dumps({"error": "Method not allowed"}),
-        status=400
+        status=400,
     )
 
 
