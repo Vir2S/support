@@ -1,9 +1,9 @@
 import json
+from random import choice, randint
+from string import ascii_letters
 
-from random import randint, choice
 from django.http import HttpResponse
 from django.urls import path
-from string import ascii_letters
 
 from core.constants import ROLES
 from core.models import User
