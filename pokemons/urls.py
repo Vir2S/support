@@ -77,7 +77,7 @@ def _get_pokemon(name) -> Pokemon | None:
 
 @csrf_exempt
 def get_delete_pokemon(request, name: str):
-    if request.method == "GET":
+    if request.method.upper() == "GET":
         pokemon: Pokemon = _get_pokemon(name)
 
         if pokemon:
@@ -92,7 +92,7 @@ def get_delete_pokemon(request, name: str):
             status=404,
         )
 
-    if request.method == "DELETE":
+    if request.method.upper() == "DELETE":
         if name in POKEMONS:
             del POKEMONS[name]
             return HttpResponse(
@@ -116,7 +116,7 @@ def get_delete_pokemon(request, name: str):
 
 @csrf_exempt
 def get_pokemon_for_mobile(request, name: str):
-    if request.method == "GET":
+    if request.method.upper() == "GET":
         pokemon: Pokemon = _get_pokemon(name)
 
         if pokemon:
@@ -145,7 +145,7 @@ def get_pokemon_for_mobile(request, name: str):
 
 @csrf_exempt
 def get_all_pokemons(request):
-    if request.method == "GET":
+    if request.method.upper() == "GET":
         pokemons: list = [asdict(pokemon) for pokemon, _ in POKEMONS.values()]
         return HttpResponse(
             content_type="application/json",
