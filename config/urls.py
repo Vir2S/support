@@ -7,4 +7,3 @@ urlpatterns = [
     path("api/users/", include("core.urls")),
     path("api/users/create-random-user/", include("examples.users")),
 ]
-
