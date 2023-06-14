@@ -22,12 +22,3 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         attrs["role"] = Role.USER
 
         return attrs
-
-
-class LoginRequestSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150)
-    password = serializers.CharField(max_length=128)
-
-
-class LoginResponseSerializer(serializers.Serializer):
-    token = serializers.CharField(max_length=255)
