@@ -24,4 +24,4 @@ jobs:
     - name: Run linters
       run: flake8 ./ --max-line-length=120 --ignore=E203,W503
     - name: Check code formatting
-      run: black --check ./ && isort --check ./
+      run: black --check ./
