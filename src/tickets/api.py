@@ -41,9 +41,7 @@ class TicketAPIViewSet(ModelViewSet):
         if ticket.manager and ticket.manager_id != request.user.id:
             raise PermissionError("This ticket is already taken")
 
-        serializer = TicketAssignSerializer(
-            data={"manager_id": request.user.id}
-        )
+        serializer = TicketAssignSerializer(data={"manager_id": request.user.id})
         serializer.is_valid()
         ticket = serializer.assign(ticket)
 
