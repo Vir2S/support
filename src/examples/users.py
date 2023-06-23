@@ -5,8 +5,8 @@ from string import ascii_letters
 from django.http import HttpResponse
 from django.urls import path
 
-from core.constants import Role
-from core.models import User
+from users.constants import Role
+from users.models import User
 
 
 def _get_random_string(size: int = 5) -> str:

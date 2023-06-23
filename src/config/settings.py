@@ -117,4 +117,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon"
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"
