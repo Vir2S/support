@@ -43,6 +43,8 @@ class TicketAPIViewSet(ModelViewSet):
                 permission_classes = [RoleIsAdmin | RoleIsManager]
             case "take":
                 permission_classes = [RoleIsManager]
+            case "reassign":
+                permission_classes = [RoleIsAdmin]
             case _:
                 permission_classes = []
 
