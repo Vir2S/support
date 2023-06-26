@@ -28,14 +28,10 @@ class Ticket(models.Model):
 class Message(models.Model):
     text = models.TextField()
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.RESTRICT,
-        related_name="messages"
+        settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="messages"
     )
     ticket = models.ForeignKey(
-        "tickets.Ticket",
-        on_delete=models.RESTRICT,
-        related_name="messages"
+        "tickets.Ticket", on_delete=models.RESTRICT, related_name="messages"
     )
 
     timestamp = models.DateTimeField(auto_now_add=True)
