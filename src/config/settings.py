@@ -27,7 +27,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = ["rest_framework", "rest_framework_simplejwt"]
 
-LOCAL_APPS = ["core", "authentication"]
+LOCAL_APPS = ["authentication", "tickets", "users"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -117,4 +117,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon"
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"
