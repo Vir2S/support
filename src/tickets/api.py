@@ -77,12 +77,7 @@ class TicketAPIViewSet(ModelViewSet):
 
         manager_id = request.data.get("manager_id")
         if manager_id is None:
-            return Response(
-                {
-                    "error": "You have to add manager_id in request"
-                },
-                400
-            )
+            return Response({"error": "You have to add manager_id in request"}, 400)
 
         if manager_id and User.objects.filter(id=manager_id).role == Role.MANAGER:
             serializer = TicketAssignSerializer(data={"manager_id": manager_id})
