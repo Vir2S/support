@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from tickets.models import Ticket
+from tickets.models import Message, Ticket
 from tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
-from tickets.serializers import TicketAssignSerializer, TicketSerializer
+from tickets.serializers import MessageSerializer, TicketAssignSerializer, TicketSerializer
 from users.constants import Role
 
 User = get_user_model()
@@ -24,7 +25,7 @@ class TicketAPIViewSet(ModelViewSet):
             return Ticket.objects.all()
 
         if user.role == Role.MANAGER:
-            Ticket.objects.filter(Q(manager=user) | Q(manager=None))
+            return Ticket.objects.filter(Q(manager_id=user.id) | Q(manager_id=None))
 
         return Ticket.objects.filter(user=user)
 
@@ -57,8 +58,8 @@ class TicketAPIViewSet(ModelViewSet):
     def take(self, request, pk):
         ticket = self.get_object()
 
-        if ticket.manager and ticket.manager_id != request.user.id:
-            raise PermissionError("This ticket is already taken")
+        if ticket.manager_id and ticket.manager_id == request.user.id:
+            raise PermissionDenied("This ticket is already taken", 403)
 
         serializer = TicketAssignSerializer(data={"manager_id": request.user.id})
         serializer.is_valid()
@@ -75,23 +76,54 @@ class TicketAPIViewSet(ModelViewSet):
 
         ticket = self.get_object()
 
-        manager_id = request.data.get("manager_id")
-        if manager_id is None:
-            return Response({"error": "You have to add manager_id in request"}, 400)
+        new_manager_id = request.data.get("new_manager_id")
+        if new_manager_id is None:
+            return Response({"detail": "You have to add new_manager_id in request"}, 400)
 
-        if manager_id and User.objects.filter(id=manager_id).role == Role.MANAGER:
-            serializer = TicketAssignSerializer(data={"manager_id": manager_id})
+        if new_manager_id and get_object_or_404(User, id=new_manager_id, role=Role.MANAGER):
+            serializer = TicketAssignSerializer(data={"manager_id": new_manager_id})
             serializer.is_valid()
             ticket = serializer.assign(ticket)
 
             return Response(TicketSerializer(ticket).data)
 
-        return Response({"error": "Bad request"}, 400)
+        return Response({"detail": "Bad request"}, 400)
 
 
 class MessageListCreateAPIView(ListCreateAPIView):
-    serializer_class = TicketSerializer
+    serializer_class = MessageSerializer
+    lookup_field = "ticket_id"
 
     def get_queryset(self):
-        # TODO: Start from here
-        raise NotImplementedError
+        # ticket = get_object_or_404(
+        #     Ticket.objects.all(), id=self.kwargs[self.lookup_field]
+        # )
+        # if ticket.user != self.request.user and ticket.manager != self.request.user:
+        #     raise Http404
+
+        return Message.objects.filter(
+            Q(ticket__user=self.request.user) | Q(ticket__manager=self.request.user),
+            ticket_id=self.kwargs[self.lookup_field],
+        )
+
+    @staticmethod
+    def get_ticket(user: User, ticket_id: int) -> Ticket:
+        """Get tickets for current user."""
+
+        tickets = Ticket.objects.filter(Q(user=user) | Q(manager=user))
+        return get_object_or_404(tickets, id=ticket_id)
+
+    def post(self, request, ticket_id: int):
+        ticket = self.get_ticket(request.user, ticket_id)
+        payload = {
+            "text": request.data["text"],
+            "ticket": ticket.id,
+        }
+        serializer = self.get_serializer(data=payload)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
