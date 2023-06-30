@@ -109,15 +109,14 @@ class MessageListCreateAPIView(ListCreateAPIView):
     @staticmethod
     def get_ticket(user: User, ticket_id: int) -> Ticket:
         """Get tickets for current user."""
-
         tickets = Ticket.objects.filter(Q(user=user) | Q(manager=user))
         return get_object_or_404(tickets, id=ticket_id)
 
     def post(self, request, ticket_id: int):
         ticket = self.get_ticket(request.user, ticket_id)
         payload = {
-            "text": request.data["text"],
-            "ticket": ticket_id,
+            "text": request.data.get("text"),
+            "ticket": ticket.id,
         }
         serializer = self.get_serializer(data=payload)
         serializer.is_valid(raise_exception=True)
