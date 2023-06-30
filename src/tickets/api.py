@@ -9,8 +9,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from tickets.models import Message, Ticket
-from tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser, IsNewManager
-from tickets.serializers import MessageSerializer, TicketAssignSerializer, TicketSerializer
+from tickets.permissions import (
+    IsOwner,
+    RoleIsAdmin,
+    RoleIsManager,
+    RoleIsUser,
+    IsNewManager,
+)
+from tickets.serializers import (
+    MessageSerializer,
+    TicketAssignSerializer,
+    TicketSerializer,
+)
 from users.constants import Role
 
 
@@ -74,9 +84,7 @@ class TicketAPIViewSet(ModelViewSet):
         ticket = self.get_object()
         new_manager_id = request.data.get("new_manager_id")
 
-        serializer = TicketAssignSerializer(
-            data={"manager_id": new_manager_id}
-        )
+        serializer = TicketAssignSerializer(data={"manager_id": new_manager_id})
         serializer.is_valid()
         ticket = serializer.assign(ticket)
 
@@ -116,6 +124,4 @@ class MessageListCreateAPIView(ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        return Response(
-            serializer.data, status=201, headers=headers
-        )
+        return Response(serializer.data, status=201, headers=headers)
