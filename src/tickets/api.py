@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -85,7 +84,7 @@ class TicketAPIViewSet(ModelViewSet):
     @swagger_auto_schema(
         operation_description="Update an item",
         request_body=TicketAssignSerializer,
-        responses={200: TicketSerializer}
+        responses={200: TicketSerializer},
     )
     def reassign(self, request, pk):
         ticket = self.get_object()
