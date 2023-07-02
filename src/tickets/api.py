@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
@@ -80,6 +82,11 @@ class TicketAPIViewSet(ModelViewSet):
         return Response(TicketSerializer(ticket).data)
 
     @action(detail=True, methods=["put"])
+    @swagger_auto_schema(
+        operation_description="Update an item",
+        request_body=TicketAssignSerializer,
+        responses={200: TicketSerializer}
+    )
     def reassign(self, request, pk):
         ticket = self.get_object()
         new_manager_id = request.data.get("new_manager_id")
