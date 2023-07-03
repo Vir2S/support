@@ -10,32 +10,32 @@ from tickets.models import Ticket
 User = get_user_model()
 
 
-def user_is_anonymous(user):
+def user_authenticated(user):
     if isinstance(user, AnonymousUser):
         raise PermissionDenied("Forbidden")
 
 
 class RoleIsAdmin(BasePermission):
     def has_permission(self, request, view):
-        user_is_anonymous(user=request.user)
+        user_authenticated(user=request.user)
         return request.user.role == Role.ADMIN
 
 
 class RoleIsManager(BasePermission):
     def has_permission(self, request, view):
-        user_is_anonymous(user=request.user)
+        user_authenticated(user=request.user)
         return request.user.role == Role.MANAGER
 
 
 class RoleIsUser(BasePermission):
     def has_permission(self, request, view):
-        user_is_anonymous(user=request.user)
+        user_authenticated(user=request.user)
         return request.user.role == Role.USER
 
 
 class IsNewManager(BasePermission):
     def has_permission(self, request, view):
-        user_is_anonymous(user=request.user)
+        user_authenticated(user=request.user)
         new_manager_id = request.data.get("new_manager_id")
         ticket_id = request.parser_context.get("kwargs").get("pk")
 
@@ -56,7 +56,7 @@ class IsNewManager(BasePermission):
 
 class IsOwner(BasePermission):
     def has_permission(self, request, view):
-        user_is_anonymous(user=request.user)
+        user_authenticated(user=request.user)
         return True
 
     def has_object_permission(self, request, view, obj: Ticket):
