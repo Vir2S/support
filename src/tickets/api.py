@@ -8,7 +8,9 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from time import sleep
 
+from config.celery import celery_app
 from tickets.models import Message, Ticket
 from tickets.permissions import (
     IsOwner,
@@ -28,11 +30,19 @@ from users.constants import Role
 User = get_user_model()
 
 
+@celery_app.task
+def send_amail():
+    print("Sending email")
+    sleep(10)
+    print("Email sent")
+
+
 class TicketAPIViewSet(ModelViewSet):
     serializer_class = TicketSerializer
 
     def get_queryset(self):
         user = self.request.user
+        send_amail.delay()
 
         if user.role == Role.ADMIN:
             return Ticket.objects.all()
