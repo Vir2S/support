@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  broker:
+    image: redis
+    container_name: support_broker
+    ports:
+      - 6379:6379
+
+  application: &app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: support_application
+    container_name: support_web
+    depends_on:
+      - broker
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app/
+
+  worker:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: support_worker
+    ports: []
+    command: bash -c "cd src/ && watchmedo auto-restart --pattern='*.py' --recursive -- celery -A config.celery worker -l INFO"
+    depends_on:
+      - broker
