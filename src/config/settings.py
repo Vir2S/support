@@ -120,7 +120,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-POKEAPI_BASE_URL = getenv("POKEAPI_BASE_URL", default="https://pokeapi.co/api/v2/pokemon")
+POKEAPI_BASE_URL = getenv(
+    "POKEAPI_BASE_URL", default="https://pokeapi.co/api/v2/pokemon"
+)
 
 AUTH_USER_MODEL = "users.User"
 
