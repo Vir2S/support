@@ -1,7 +1,11 @@
 from datetime import timedelta
 from distutils.util import strtobool
+from dotenv import load_dotenv
 from os import getenv
 from pathlib import Path
+
+# Load variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: ROOT_DIR / 'subdir'.
 SRC_DIR = Path(__file__).resolve().parent.parent
