@@ -6,4 +6,4 @@ from users.serializers import UserRegistrationSerializer
 
 class UserRegistrationAPIView(CreateAPIView):
     serializer_class = UserRegistrationSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
